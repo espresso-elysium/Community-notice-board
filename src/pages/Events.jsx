@@ -1,19 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import NoticeCard from '../components/NoticeCard';
+import { getNotices } from '../services/noticeService';
 
 function Events() {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const all = JSON.parse(localStorage.getItem('notices') || '[]');
-    setEvents(all.filter(n => n.category === 'Event'));
+    const fetchEvents = async () => {
+      setLoading(true);
+      const result = await getNotices();
+      
+      if (result.success) {
+        const eventNotices = result.notices.filter(n => n.category === 'Event');
+        setEvents(eventNotices);
+      } else {
+        setError('Failed to load events. Please refresh the page.');
+      }
+      setLoading(false);
+    };
+
+    fetchEvents();
   }, []);
 
   const filtered = events.filter(n =>
     n.title.toLowerCase().includes(search.toLowerCase()) ||
     n.description.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <section>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Events</h2>
+        <div className="text-center py-8">
+          <div className="text-gray-500">Loading events...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Events</h2>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section>

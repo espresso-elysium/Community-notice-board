@@ -1,19 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import NoticeCard from '../components/NoticeCard';
+import { getNotices } from '../services/noticeService';
 
 function BuySell() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const all = JSON.parse(localStorage.getItem('notices') || '[]');
-    setItems(all.filter(n => n.category === 'Buy/Sell'));
+    const fetchItems = async () => {
+      setLoading(true);
+      const result = await getNotices();
+      
+      if (result.success) {
+        const buySellNotices = result.notices.filter(n => n.category === 'Buy/Sell');
+        setItems(buySellNotices);
+      } else {
+        setError('Failed to load items. Please refresh the page.');
+      }
+      setLoading(false);
+    };
+
+    fetchItems();
   }, []);
 
   const filtered = items.filter(n =>
     n.title.toLowerCase().includes(search.toLowerCase()) ||
     n.description.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <section>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Buy/Sell</h2>
+        <div className="text-center py-8">
+          <div className="text-gray-500">Loading items...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Buy/Sell</h2>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section>

@@ -8,7 +8,7 @@ const categories = [
   'Reminder',
 ];
 
-function NoticeForm({ onSubmit }) {
+function NoticeForm({ onSubmit, isSubmitting = false }) {
   const [form, setForm] = useState({
     title: '',
     category: '',
@@ -47,6 +47,7 @@ function NoticeForm({ onSubmit }) {
           onChange={handleChange}
           className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
           required
+          disabled={isSubmitting}
         />
       </div>
       <div className="mb-4">
@@ -57,6 +58,7 @@ function NoticeForm({ onSubmit }) {
           onChange={handleChange}
           className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
           required
+          disabled={isSubmitting}
         >
           <option value="">Select category</option>
           {categories.map((cat) => (
@@ -73,6 +75,7 @@ function NoticeForm({ onSubmit }) {
           className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
           rows={3}
           required
+          disabled={isSubmitting}
         />
       </div>
       <div className="mb-4">
@@ -84,6 +87,7 @@ function NoticeForm({ onSubmit }) {
           onChange={handleChange}
           className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
           required
+          disabled={isSubmitting}
         />
       </div>
       <div className="mb-4">
@@ -94,15 +98,21 @@ function NoticeForm({ onSubmit }) {
           value={form.contact}
           onChange={handleChange}
           className="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
+          disabled={isSubmitting}
         />
       </div>
       {error && <div className="text-red-600 mb-2">{error}</div>}
       {success && <div className="text-green-600 mb-2">{success}</div>}
       <button
         type="submit"
-        className="bg-blue-700 text-white px-6 py-2 rounded hover:bg-blue-800 transition font-semibold w-full"
+        disabled={isSubmitting}
+        className={`w-full px-6 py-2 rounded font-semibold transition ${
+          isSubmitting 
+            ? 'bg-gray-400 cursor-not-allowed' 
+            : 'bg-blue-700 text-white hover:bg-blue-800'
+        }`}
       >
-        Post Notice
+        {isSubmitting ? 'Posting...' : 'Post Notice'}
       </button>
     </form>
   );
