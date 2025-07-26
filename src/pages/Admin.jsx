@@ -50,6 +50,9 @@ function Admin() {
 
   return (
     <section>
+        <div className="mb-2 text-right">
+        <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded font-semibold shadow">Admin: Kritika Tyagi</span>
+      </div>
       <h2 className="text-2xl font-bold mb-4 text-blue-700">Admin View</h2>
       {notices.length === 0 ? (
         <div className="text-gray-500">No notices to manage.</div>
