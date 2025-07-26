@@ -50,7 +50,11 @@ function Admin() {
 
   return (
     <section>
+<<<<<<< HEAD
       <div className="mb-2 text-right">
+=======
+        <div className="mb-2 text-right">
+>>>>>>> f666a3a027d0d9ee04a3104e872d01b0d8eb8537
         <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded font-semibold shadow">Admin: Kritika Tyagi</span>
       </div>
       <h2 className="text-2xl font-bold mb-4 text-blue-700">Admin View</h2>
