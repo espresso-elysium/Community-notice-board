@@ -23,9 +23,22 @@ function Admin() {
   }, [authenticated]);
 
   const handleDelete = async (id) => {
-    const result = await deleteNotice(id);
-    if (!result.success) {
-      setError('Failed to delete notice.');
+    try {
+      console.log('Attempting to delete notice with ID:', id);
+      const result = await deleteNotice(id);
+      console.log('Delete result:', result);
+      
+      if (result.success) {
+        console.log('Notice deleted successfully');
+        // Clear any previous errors
+        setError('');
+      } else {
+        console.error('Failed to delete notice:', result.error);
+        setError(`Failed to delete notice: ${result.error}`);
+      }
+    } catch (err) {
+      console.error('Error in handleDelete:', err);
+      setError(`Error deleting notice: ${err.message}`);
     }
   };
 

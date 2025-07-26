@@ -1,6 +1,13 @@
 import React from 'react';
 
 function NoticeCard({ notice, onDelete, onAdmin }) {
+  const handleDeleteClick = () => {
+    if (window.confirm('Are you sure you want to delete this notice?')) {
+      console.log('Delete confirmed for notice:', notice.id);
+      onDelete(notice.id);
+    }
+  };
+
   return (
     <div className="bg-white shadow rounded-lg p-4 mb-4 border-l-4 border-blue-500">
       <div className="flex flex-col space-y-3">
@@ -12,7 +19,7 @@ function NoticeCard({ notice, onDelete, onAdmin }) {
           {onAdmin && (
             <button
               className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm"
-              onClick={() => onDelete(notice.id)}
+              onClick={handleDeleteClick}
             >
               Delete
             </button>

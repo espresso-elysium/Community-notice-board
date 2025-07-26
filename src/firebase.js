@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -13,10 +13,40 @@ const firebaseConfig = {
   measurementId: "G-4NQ00HCMPF"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Validate Firebase config
+const validateConfig = (config) => {
+  const required = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+  const missing = required.filter(key => !config[key]);
 
-// Initialize Firestore
-export const db = getFirestore(app);
+  if (missing.length > 0) {
+    throw new Error(`Missing Firebase config: ${missing.join(', ')}`);
+  }
 
+  return true;
+};
+
+// Initialize Firebase with error handling
+let app;
+let db;
+
+try {
+  validateConfig(firebaseConfig);
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+
+  // Log successful initialization
+  console.log('Firebase initialized successfully');
+
+  // In development, you can connect to emulator
+  if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_USE_EMULATOR) {
+    connectFirestoreEmulator(db, 'localhost', 8080);
+    console.log('Connected to Firestore emulator');
+  }
+
+} catch (error) {
+  console.error('Firebase initialization failed:', error);
+  throw error;
+}
+
+export { db };
 export default app; 

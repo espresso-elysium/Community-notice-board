@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ConnectionStatus from './components/ConnectionStatus';
 import Home from './pages/Home';
 import Announcements from './pages/Announcements';
 import Events from './pages/Events';
@@ -14,6 +15,7 @@ import Feedback from './pages/Feedback';
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
+      <ConnectionStatus />
       <Navbar />
       <main className="flex-1 w-full max-w-3xl mx-auto px-2 sm:px-4 py-6">
         <Routes>
@@ -31,6 +33,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
