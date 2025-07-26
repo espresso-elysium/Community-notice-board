@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NoticeCard from '../components/NoticeCard';
-import { getNotices } from '../services/noticeService';
+import { onNoticesSnapshot } from '../services/noticeService';
 
 function BuySell() {
   const [items, setItems] = useState([]);
@@ -9,20 +9,13 @@ function BuySell() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchItems = async () => {
-      setLoading(true);
-      const result = await getNotices();
-      
-      if (result.success) {
-        const buySellNotices = result.notices.filter(n => n.category === 'Buy/Sell');
-        setItems(buySellNotices);
-      } else {
-        setError('Failed to load items. Please refresh the page.');
-      }
+    setLoading(true);
+    const unsubscribe = onNoticesSnapshot((allNotices) => {
+      const buySellNotices = allNotices.filter(n => n.category === 'Buy/Sell');
+      setItems(buySellNotices);
       setLoading(false);
-    };
-
-    fetchItems();
+    });
+    return () => unsubscribe();
   }, []);
 
   const filtered = items.filter(n =>

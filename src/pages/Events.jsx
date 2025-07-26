@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NoticeCard from '../components/NoticeCard';
-import { getNotices } from '../services/noticeService';
+import { onNoticesSnapshot } from '../services/noticeService';
 
 function Events() {
   const [events, setEvents] = useState([]);
@@ -9,20 +9,13 @@ function Events() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      setLoading(true);
-      const result = await getNotices();
-      
-      if (result.success) {
-        const eventNotices = result.notices.filter(n => n.category === 'Event');
-        setEvents(eventNotices);
-      } else {
-        setError('Failed to load events. Please refresh the page.');
-      }
+    setLoading(true);
+    const unsubscribe = onNoticesSnapshot((allNotices) => {
+      const eventNotices = allNotices.filter(n => n.category === 'Event');
+      setEvents(eventNotices);
       setLoading(false);
-    };
-
-    fetchEvents();
+    });
+    return () => unsubscribe();
   }, []);
 
   const filtered = events.filter(n =>

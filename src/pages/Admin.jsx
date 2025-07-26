@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NoticeCard from '../components/NoticeCard';
-import { getNotices, deleteNotice } from '../services/noticeService';
+import { onNoticesSnapshot, deleteNotice } from '../services/noticeService';
 
 const ADMIN_PASSWORD = 'admin123';
 
@@ -13,27 +13,18 @@ function Admin() {
 
   useEffect(() => {
     if (authenticated) {
-      fetchNotices();
+      setLoading(true);
+      const unsubscribe = onNoticesSnapshot((allNotices) => {
+        setNotices(allNotices);
+        setLoading(false);
+      });
+      return () => unsubscribe();
     }
   }, [authenticated]);
 
-  const fetchNotices = async () => {
-    setLoading(true);
-    const result = await getNotices();
-    
-    if (result.success) {
-      setNotices(result.notices);
-    } else {
-      setError('Failed to load notices.');
-    }
-    setLoading(false);
-  };
-
   const handleDelete = async (id) => {
     const result = await deleteNotice(id);
-    if (result.success) {
-      setNotices(notices.filter(n => n.id !== id));
-    } else {
+    if (!result.success) {
       setError('Failed to delete notice.');
     }
   };
